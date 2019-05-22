@@ -1,0 +1,30 @@
+dist: xenial
+language: go
+sudo: false
+go:
+  - 1.11.x
+before_install:
+  - go get -t -v ./...
+
+# script:
+#   - go test -race -coverprofile=coverage.txt -covermode=atomic
+
+# after_success:
+#   - bash <(curl -s https://codecov.io/bash)
+
+before_deploy:
+  - go get -u github.com/mitchellh/gox
+  - mkdir -p $TRAVIS_BUILD_DIR/dist
+  - make DIST=$TRAVIS_BUILD_DIR/dist package
+
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key:
+    secure: EGJ3fArjm3BTui3YjQtdQJ0ugIixeODpexdUfytLi7dZmuyzS9DYlXIptiynKYpr2Vw3rLaJOUhe2CeGC6zXJaYRXU//ArBjYLrOSH0s7CicxsnMgrhmXd4iczGDt+SpXOs3f3BHbE+HrLTrmcVLCeZ2tsqTNOHwmy3fcoWAPV8w3N8DUxO0iYdkrxvF/5E2EFdrQBxD4Q16sGbzVFACGGOE1VOtxMXWY6GVViUb773v0MkOngZnjKU7RbE2DTOLFTCORBchId+J2REMjFPhNShtgPDgGw++cwGGkVZQIdEnIsmMNGISQt0GyUjVnz07KlOBxQzFL4umCG87xQMmPVTwwYl9F2EXOqLRxtIg4VlnOrTlywAZ9up8xHL11JfoLF+EbrLl9/7Wr6SNYk7yxCfoMiTfJ5zb96ncKHyjw+tDN93xTlnFN7nE3Bg3PCDkyFb5NpxVvthU2IYHmuzHPGhudkLqzlNOV9/TFndr72klFx5KHAoOwE7bjkv3tOdsv0UaElwcaITstvl/RXI6iAf+YD+t1zfIZwI7gsKaEoxBj5JP339mSxbyZfAhKrgL5xlRDsDU6RWBqQ1u3rE7QeBuVqtw+Jq4B824cF3Tg5MTz7szhXcgXE4PPRW8la+OiLRo1/U9sBv25OjP3iYaux4lko0Jtn4qKq05r/1XURw=
+  file_glob: true
+  file: "$TRAVIS_BUILD_DIR/dist/*/pkg/*.{tar.gz,zip}"
+  on:
+    tags: true
+    all_branches: true
+    condition: "$TRAVIS_TAG =~ ^v[0-9].*$"
