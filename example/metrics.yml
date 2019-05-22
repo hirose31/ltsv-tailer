@@ -1,0 +1,39 @@
+transform:
+  tolower:
+    - method
+  tosec:
+    - resptime: microsec
+metrics:
+  - name: ltsv_http_request_count_total
+    kind: counter
+    value_key: COUNTER
+    help: http request count total
+    labels:
+      - vhost
+      - method
+      - code
+  - name: ltsv_http_response_bytes_total
+    kind: counter
+    value_key: size
+    help: http response bytes total
+    labels:
+      - vhost
+      - method
+      - code
+  - name: ltsv_http_response_seconds
+    kind: histogram
+    value_key: resptime
+    help: http response seconds
+    buckets:
+      - 0.1
+      - 0.5
+      - 1.0
+      - 2.0
+      - 4.0
+      - 8.0
+    labels:
+      - vhost
+      - method
+      - code
+      - path
+      - host

@@ -1,0 +1,122 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+from functools import partial
+import pprint
+
+import sys
+import os
+import argcomplete
+import argparse
+import logging
+import time
+import random
+import numpy as np
+import atexit
+
+p = partial(pprint.pprint, width=1)
+
+logger = logging.getLogger(os.path.basename(sys.argv[0]))
+
+vhosts = ['gyoza', 'curry', 'taco']
+methods = ['GET', 'GET', 'POST', 'PUT', 'GET', 'GET']
+codes = ['200', '404', '500', '200', '200', 301, '201', '200', '200']
+paths = ['/', '/user/hirose31', '/admin', '/login', '/']
+hosts = ['192.0.2.10', '192.0.2.10', '192.0.2.20', '192.0.2.30', '192.0.2.40']
+uas = ['curl', 'w3m', 'lynx']
+
+total_count = 0
+total_size = 0
+
+
+def main():
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s (%(name)s) [%(levelname)-7s] %(message)s",
+        datefmt='%H:%M:%S',
+    )
+
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
+    parser.add_argument("-d", "--debug",
+                        action="count",
+                        default=os.environ.get('GA_DEBUG', 0),
+                        help="enable debug mode of %(prog)s")
+    parser.add_argument("-?", action="help")
+
+    parser.add_argument("-o", "--output",
+                        type=str,
+                        required=True,
+                        help=('file to output '
+                              ))
+
+    parser.add_argument("-i", "--interval",
+                        type=float,
+                        default=0.5,
+                        help=('output interval '
+                              '(default: %(default)s)'))
+
+    parser.add_argument("-1",
+                        action='store_true',
+                        dest='oneshot',
+                        default=False,
+                        help=('one shot '
+                              '(default: %(default)s)'))
+
+    argcomplete.autocomplete(parser)
+    args = parser.parse_args()
+
+    if args.debug > 0:
+        logger.setLevel(logging.DEBUG)
+        logger.debug('debug mode')
+
+    atexit.register(summary)
+
+    global total_count
+    global total_size
+
+    with open(args.output, mode='a') as f:
+        while True:
+            line, size = generate_line()
+            print(line)
+            f.write(f"{line}\n")
+            sys.stdout.flush()
+            f.flush()
+            total_count += 1
+            total_size += size
+            logger.debug(f'count={total_count} size={total_size}')
+            if args.oneshot:
+                break
+            time.sleep(args.interval)
+
+
+def generate_line():
+    size = random.randrange(512)
+    line = "\t".join([
+        f'vhost:{vhosts[random.randrange(len(vhosts))]}',
+        f'method:{methods[random.randrange(len(methods))]}',
+        f'code:{codes[random.randrange(len(codes))]}',
+        f'path:{paths[random.randrange(len(paths))]}',
+        f'size:{size}',
+        f'host:{hosts[random.randrange(len(hosts))]}',
+        f'ua:{uas[random.randrange(len(uas))]}',
+        f'resptime:{resptime()}',  # usec
+    ])
+
+    return line, size
+
+
+def summary():
+    print(f'summary: count={total_count} size={total_size}')
+
+
+def resptime():
+    v = abs(np.random.normal(loc=0, scale=1, size=1)[0] + 1.8)
+    v = int(v * v * 0.4 * 1000000)
+    return v
+
+
+if __name__ == '__main__':
+    main()
