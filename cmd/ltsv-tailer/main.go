@@ -73,6 +73,8 @@ func main() {
 		Revision: Revision,
 	}
 
+	listenAddr := ":9588"
+
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, `
 Usage:
@@ -119,7 +121,8 @@ Options:
 
 	glog.Infof("Start promhttp")
 	http.Handle("/metrics", promhttp.Handler())
-	glog.Fatal(http.ListenAndServe(":9588", nil))
+	glog.Infof("Listening on %s", listenAddr)
+	glog.Fatal(http.ListenAndServe(listenAddr, nil))
 
 }
 
