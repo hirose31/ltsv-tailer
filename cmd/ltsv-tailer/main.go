@@ -97,7 +97,7 @@ Options:
 	}
 	if *metricsConfigFile == "" {
 		flag.Usage()
-		glog.Exitf("missing -rule option")
+		glog.Exitf("missing -metrics option")
 	}
 
 	enableDumpProfile()
