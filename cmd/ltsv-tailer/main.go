@@ -121,6 +121,15 @@ Options:
 
 	glog.Infof("Start promhttp")
 	http.Handle("/metrics", promhttp.Handler())
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(`<html>
+			<head><title>LTSV tailer</title></head>
+			<body>
+			<h1>LTSV tailer</h1>
+			<p><a href="/metrics">Metrics</a></p>
+			</body>
+			</html>`))
+	})
 	glog.Infof("Listening on %s", listenAddr)
 	glog.Fatal(http.ListenAndServe(listenAddr, nil))
 
