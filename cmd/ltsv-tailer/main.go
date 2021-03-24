@@ -15,7 +15,7 @@ import (
 	"github.com/hirose31/ltsv-tailer/pkg/targetfile"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	_ "net/http/pprof"
+	_ "net/http/pprof" // #nosec G108
 )
 
 const version = "0.1.0"
@@ -115,13 +115,14 @@ Options:
 	glog.Infof("Start promhttp")
 	http.Handle("/metrics", promhttp.Handler())
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(`<html>
+		_, _ = w.Write([]byte(`<html>
 			<head><title>LTSV tailer</title></head>
 			<body>
 			<h1>LTSV tailer</h1>
 			<p><a href="/metrics">Metrics</a></p>
 			</body>
 			</html>`))
+		// fixme handle error
 	})
 	glog.Infof("Listening on %s", listenAddr)
 	glog.Fatal(http.ListenAndServe(listenAddr, nil))
@@ -137,13 +138,13 @@ func enableDumpProfile() {
 			select {
 			case <-sig:
 				fmt.Fprintf(os.Stderr, "--------------------------------------------------------------------------\n")
-				fmt.Fprintf(os.Stderr, "* goroutine\n")
+				fmt.Fprintf(os.Stderr, "* goroutine\n") // #nosec G104
 				pprof.Lookup("goroutine").WriteTo(os.Stderr, 1)
-				fmt.Fprintf(os.Stderr, "* heap\n")
+				fmt.Fprintf(os.Stderr, "* heap\n") // #nosec G104
 				pprof.Lookup("heap").WriteTo(os.Stderr, 1)
-				fmt.Fprintf(os.Stderr, "* allocs\n")
+				fmt.Fprintf(os.Stderr, "* allocs\n") // #nosec G104
 				pprof.Lookup("allocs").WriteTo(os.Stderr, 1)
-				fmt.Fprintf(os.Stderr, "--------------------------------------------------------------------------\n")
+				fmt.Fprintf(os.Stderr, "--------------------------------------------------------------------------\n") // #nosec G104
 			}
 		}
 	}()
