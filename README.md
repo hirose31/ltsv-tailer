@@ -1,3 +1,8 @@
+![GitHub](https://img.shields.io/github/license/hirose31/ltsv-tailer)
+[![test](https://github.com/hirose31/ltsv-tailer/actions/workflows/test.yml/badge.svg)](https://github.com/hirose31/ltsv-tailer/actions/workflows/test.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/hirose31/ltsv-tailer?style=flat-square)](https://goreportcard.com/report/github.com/hirose31/ltsv-tailer)
+[![Go Doc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](http://godoc.org/github.com/hirose31/ltsv-tailer)
+
 # ltsv-tailer
 
 `ltsv-tailer` is the exporter for Prometheus that reads LTSV files like `tail -F` and exports metrics by given metrics configuration.
@@ -7,7 +12,9 @@
 ```
 ./example/logger -o tailme -i 1 &
 
-./ltsv-tailer -metrics example/metrics.yml -file tailme
+./ltsv-tailer -metrics example/metrics.yml -file tailme -logtostderr &
+
+curl http://127.0.0.1:9588/metrics
 ```
 
 ## Metrics Configuration
@@ -55,8 +62,3 @@ metrics:
       - path
       - host
 ```
-
-## License
-
-Licensed under the Apache License, Version 2.0.
-You may obtain a copy of the License at [http://www.apache.org/licenses/LICENSE-2.0].
