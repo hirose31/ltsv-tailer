@@ -18,20 +18,21 @@ import (
 	_ "net/http/pprof"
 )
 
+const version = "0.1.0"
+
+var revision = "HEAD"
+
 type buildInfo struct {
-	Branch   string
 	Version  string
 	Revision string
 }
 
 func (b buildInfo) String() string {
 	return fmt.Sprintf(
-		"ltsv-tailer version %s git revision %s go version %s go arch %s go os %s",
+		"ltsv-tailer %s (rev: %s/%s)",
 		b.Version,
 		b.Revision,
 		runtime.Version(),
-		runtime.GOARCH,
-		runtime.GOOS,
 	)
 }
 
@@ -55,22 +56,14 @@ var (
 	metricsConfigFile = flag.String("metrics", "", "Metrics config file")
 )
 
-// supplied by the linker
-var (
-	Branch   string
-	Version  string
-	Revision string
-)
-
 func init() {
 	flag.Var(&files, "file", "File to tail. This option may be spcified multiple times")
 }
 
 func main() {
 	buildInfo := buildInfo{
-		Branch:   Branch,
-		Version:  Version,
-		Revision: Revision,
+		Version:  version,
+		Revision: revision,
 	}
 
 	listenAddr := ":9588"
