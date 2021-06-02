@@ -25,8 +25,9 @@ Example metrics configuration:
 transform:
   tolower:
     - method
-  tosec:
-    - resptime: microsec
+  # transform resptime in microsec into second
+  #tosec:
+  #  - resptime: microsec
 metrics:
   - name: ltsv_http_request_count_total
     kind: counter
@@ -49,12 +50,17 @@ metrics:
     value_key: resptime
     help: http response seconds
     buckets:
+      - 0.005
+      - 0.01
+      - 0.025
+      - 0.05
       - 0.1
+      - 0.25
       - 0.5
       - 1.0
-      - 2.0
-      - 4.0
-      - 8.0
+      - 2.5
+      - 5.0
+      - 10.0
     labels:
       - vhost
       - method
