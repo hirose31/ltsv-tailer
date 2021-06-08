@@ -96,7 +96,7 @@ func (tf *TargetFile) startTimestampChecker() {
 }
 
 func (tf *TargetFile) checkTimestamp() {
-	glog.Infof("checkTimestamp %s", tf.currentFilename)
+	glog.V(2).Infof("checkTimestamp %s", tf.currentFilename)
 	newfilename := tf.strftime.FormatString(time.Now())
 	if newfilename == tf.currentFilename {
 		return
@@ -109,19 +109,12 @@ func (tf *TargetFile) checkTimestamp() {
 		return
 	}
 
-	glog.Infof("newfile found kill old tailer")
-	tf.tailer.Kill(nil)
-
-	glog.Infof("%s checkTimestamp waiting", tf.currentFilename)
-	err = tf.tailer.Wait()
-	glog.Infof("%s checkTimestamp exiting", tf.currentFilename)
-	if err != nil {
-		glog.Warningf("%s Wait err: %s", tf.currentFilename, err)
-	}
+	glog.Infof("found newfile: %s -> %s", tf.currentFilename, newfilename)
+	tf.stop()
 
 	tf.currentFilename = newfilename
-	tf.setCurrentTailer()
 
+	tf.setCurrentTailer()
 	tf.Start()
 }
 
@@ -136,6 +129,16 @@ func (tf *TargetFile) Start() {
 
 		glog.Infof("%s exiting reading line loop", tf.currentFilename)
 	}()
+}
+
+func (tf *TargetFile) stop() {
+	glog.Infof("%s try to stop", tf.currentFilename)
+
+	err := tf.tailer.Stop()
+	glog.Infof("%s stopped", tf.currentFilename)
+	if err != nil {
+		glog.Errorf("%s Wait err: %s", tf.currentFilename, err)
+	}
 }
 
 func (tf *TargetFile) processLine(line string) {
