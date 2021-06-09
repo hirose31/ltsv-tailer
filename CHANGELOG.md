@@ -1,3 +1,8 @@
+## [v0.1.3](https://github.com/hirose31/ltsv-tailer/compare/v0.1.2...v0.1.3) (2021-06-08)
+
+* Add stop method [#3](https://github.com/hirose31/ltsv-tailer/pull/3) ([hirose31](https://github.com/hirose31))
+* Use latest hpcloud/tail [#2](https://github.com/hirose31/ltsv-tailer/pull/2) ([hirose31](https://github.com/hirose31))
+
 ## [v0.1.2](https://github.com/hirose31/ltsv-tailer/compare/v0.1.1...v0.1.2) (2021-06-02)
 
 
