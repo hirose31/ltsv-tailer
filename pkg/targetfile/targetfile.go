@@ -40,11 +40,6 @@ func NewTargetFile(filename string, metricsStore *metrics.Store) *TargetFile {
 		tf.currentFilename = filename
 		glog.Infof("currentFilename: %s", tf.currentFilename)
 	}
-	tf.setCurrentTailer()
-
-	if tf.isTimestampedFile() {
-		tf.startTimestampChecker()
-	}
 
 	return tf
 }
@@ -105,29 +100,37 @@ func (tf *TargetFile) checkTimestamp() {
 	glog.Infof("detect differ filename: %s %s", tf.currentFilename, newfilename)
 	_, err := os.Stat(newfilename)
 	if err != nil {
-		glog.Infof("newfile not found. try again later")
+		glog.Infof("newfile not found. try again later: %s", newfilename)
 		return
 	}
 
 	glog.Infof("found newfile: %s -> %s", tf.currentFilename, newfilename)
-	tf.stop()
-
 	tf.currentFilename = newfilename
-
-	tf.setCurrentTailer()
-	tf.Start()
+	tf.stop()
 }
 
 // Start begins the main line processing go routine.
 func (tf *TargetFile) Start() {
-	glog.Infof("Start: %s", tf.currentFilename)
+	if tf.isTimestampedFile() {
+		tf.startTimestampChecker()
+	}
 
 	go func() {
-		for line := range tf.tailer.Lines {
-			tf.processLine(line.Text)
-		}
+		for {
+			glog.Infof("Start: %s", tf.currentFilename)
+			tf.setCurrentTailer()
 
-		glog.Infof("%s exiting reading line loop", tf.currentFilename)
+			for line := range tf.tailer.Lines {
+				tf.processLine(line.Text)
+			}
+
+			glog.Infof("exiting reading line loop: %s", tf.currentFilename)
+
+			err := tf.tailer.Wait()
+			if err != nil {
+				glog.Fatalf("failed to wait: %s", err)
+			}
+		}
 	}()
 }
 
