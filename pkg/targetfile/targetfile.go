@@ -116,7 +116,10 @@ func (tf *TargetFile) Start() {
 	}
 
 	go func() {
+		retryUntil := time.Unix(0, 0)
 		for {
+			now := time.Now()
+
 			glog.Infof("Start: %s", tf.currentFilename)
 			tf.setCurrentTailer()
 
@@ -128,7 +131,26 @@ func (tf *TargetFile) Start() {
 
 			err := tf.tailer.Wait()
 			if err != nil {
-				glog.Fatalf("failed to wait: %s", err)
+				glog.Warningf("failed to wait: %s", err)
+
+				// Since logrotate creates a file with root:root 600,
+				// permission is denied depending on the timing. So
+				// I'm retrying for a very short time.
+				if retryUntil.After(now) {
+					// retryUntil is future
+					glog.Warningf("rety after 0.5s. retry until %s\n", retryUntil)
+					time.Sleep(time.Millisecond * 500)
+				} else {
+					// retryUntil is past
+					if retryUntil.Before(now.Add(-5 * time.Second)) {
+						// too old
+						retryUntil = now.Add(time.Second * 3)
+						glog.Infof("retry after 0.5s. set new retry until: %s\n", retryUntil)
+						time.Sleep(time.Millisecond * 500)
+					} else {
+						glog.Fatalf("exceed retryUntil! so exiting...")
+					}
+				}
 			}
 		}
 	}()
