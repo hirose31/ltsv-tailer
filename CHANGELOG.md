@@ -1,3 +1,7 @@
+## [v0.1.4](https://github.com/hirose31/ltsv-tailer/compare/v0.1.3...v0.1.4) (2021-06-14)
+
+* Revise Start logic and recreate tailer when exiting reading line loop [#4](https://github.com/hirose31/ltsv-tailer/pull/4) ([hirose31](https://github.com/hirose31))
+
 ## [v0.1.3](https://github.com/hirose31/ltsv-tailer/compare/v0.1.2...v0.1.3) (2021-06-08)
 
 * Add stop method [#3](https://github.com/hirose31/ltsv-tailer/pull/3) ([hirose31](https://github.com/hirose31))
