@@ -87,6 +87,16 @@ func (store *Store) Load(conf string) {
 					}
 				}
 			}
+		case "strip_query_string":
+			for _, e := range v.([]interface{}) {
+				store.RecordTransformer[e.(string)] = func(s string) string {
+					i := strings.Index(s, "?")
+					if i > -1 {
+						return s[:i]
+					}
+					return s
+				}
+			}
 		}
 	}
 
@@ -187,6 +197,9 @@ METRIC_COUNTER:
 		labelKV := prometheus.Labels{}
 		for _, key := range metric.Labels {
 			if val, ok := record[key]; ok {
+				if transformer, ok := store.RecordTransformer[key]; ok {
+					val = transformer(val)
+				}
 				labelKV[key] = val
 			} else {
 				glog.Warningf("SKIP missing key: %s", key)
@@ -218,6 +231,9 @@ METRIC_HISTOGRAM:
 		labelKV := prometheus.Labels{}
 		for _, key := range metric.Labels {
 			if val, ok := record[key]; ok {
+				if transformer, ok := store.RecordTransformer[key]; ok {
+					val = transformer(val)
+				}
 				labelKV[key] = val
 			} else {
 				glog.Warningf("SKIP missing key: %s", key)
