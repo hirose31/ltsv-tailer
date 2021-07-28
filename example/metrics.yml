@@ -1,8 +1,8 @@
 transform:
-  tolower:
-    - method
   tosec:
     - resptime: microsec
+  strip_query_string:
+    - path
 metrics:
   - name: ltsv_http_request_count_total
     kind: counter

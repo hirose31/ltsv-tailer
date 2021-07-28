@@ -23,9 +23,13 @@ Example metrics configuration:
 
 ``` yaml
 transform:
-  tolower:
-    - method
-  # transform resptime in microsec into second
+  ### "GET" -> "get"
+  #tolower:
+  #  - method
+  ### strip query string from path
+  #strip_query_string:
+  #  - path
+  ### transform resptime in microsec into second
   #tosec:
   #  - resptime: microsec
 metrics:
