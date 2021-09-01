@@ -64,6 +64,4 @@ metrics:
       - vhost
       - method
       - code
-      - path
-      - host
 ```

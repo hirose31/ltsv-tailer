@@ -35,5 +35,6 @@ metrics:
       - vhost
       - method
       - code
-      - path
-      - host
+      # BE CAREFUL! path and host cause high cardinality and require huge memory.
+      # - path
+      # - host
