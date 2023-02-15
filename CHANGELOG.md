@@ -1,7 +1,3 @@
-## [v0.1.7](https://github.com/hirose31/ltsv-tailer/compare/v0.1.6...v0.1.7) (2023-02-15)
-
-* Bump github.com/prometheus/client_golang from 1.10.0 to 1.11.1
-
 ## [v0.1.6](https://github.com/hirose31/ltsv-tailer/compare/v0.1.5...v0.1.6) (2021-07-28)
 
 * Add strip_query_string transformer [#6](https://github.com/hirose31/ltsv-tailer/pull/6) ([hirose31](https://github.com/hirose31))
