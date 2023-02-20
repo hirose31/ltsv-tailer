@@ -1,6 +1,8 @@
+// Package targetfile ...
 package targetfile
 
 import (
+	"io"
 	"os"
 	"strings"
 	"time"
@@ -27,7 +29,7 @@ func NewTargetFile(filename string, metricsStore *metrics.Store) *TargetFile {
 	glog.Infof("NewTargetFile: %s", filename)
 	tf := &TargetFile{filename: filename, metricsStore: metricsStore}
 
-	if strings.Index(filename, "%") >= 0 {
+	if strings.Contains(filename, "%") {
 		// filename contains format string
 		tf.strftime, err = strftime.New(filename)
 		if err != nil {
@@ -53,7 +55,7 @@ func (tf *TargetFile) setCurrentTailer() {
 		MustExist:   false,
 		Location: &tail.SeekInfo{
 			0,
-			os.SEEK_END,
+			io.SeekEnd,
 		},
 	})
 	if err != nil {
@@ -69,7 +71,7 @@ func (tf *TargetFile) startTimestampChecker() {
 	// interval is normally 60s
 	// if contain '%M' or '%S' then 3s
 	var interval time.Duration
-	if strings.Index(tf.filename, "%S") >= 0 || strings.Index(tf.filename, "%M") >= 0 {
+	if strings.Contains(tf.filename, "%S") || strings.Contains(tf.filename, "%M") {
 		interval = 3 * time.Second
 	} else {
 		interval = 60 * time.Second
@@ -82,10 +84,8 @@ func (tf *TargetFile) startTimestampChecker() {
 		defer ticker.Stop()
 
 		for {
-			select {
-			case <-ticker.C:
-				tf.checkTimestamp()
-			}
+			<-ticker.C
+			tf.checkTimestamp()
 		}
 	}()
 }

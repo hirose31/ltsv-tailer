@@ -1,3 +1,4 @@
+// Package metrics provides Config struct
 package metrics
 
 // Config contains metrics and transform definitions.

@@ -1,7 +1,7 @@
 package metrics
 
 import (
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -51,7 +51,7 @@ func NewStore() *Store {
 
 // Load loads from metrics config file.
 func (store *Store) Load(conf string) {
-	content, err := ioutil.ReadFile(filepath.Clean(conf))
+	content, err := os.ReadFile(filepath.Clean(conf))
 	if err != nil {
 		glog.Fatal(err)
 	}

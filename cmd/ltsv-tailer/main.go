@@ -100,7 +100,7 @@ Options:
 	if *enablePprof {
 		glog.Infof("Start pprof")
 		go func() {
-			glog.Fatal(http.ListenAndServe("localhost:6060", nil))
+			glog.Fatal(http.ListenAndServe("localhost:6060", nil)) // #nosec G114
 		}()
 	}
 
@@ -125,27 +125,26 @@ Options:
 		// fixme handle error
 	})
 	glog.Infof("Listening on %s", listenAddr)
-	glog.Fatal(http.ListenAndServe(listenAddr, nil))
+	glog.Fatal(http.ListenAndServe(listenAddr, nil)) // #nosec G114
 
 }
 
 func enableDumpProfile() {
 	go func() {
-		sig := make(chan os.Signal)
+		sig := make(chan os.Signal, 1)
 		signal.Notify(sig, syscall.SIGQUIT)
 
+		/* #nosec G104 */
 		for {
-			select {
-			case <-sig:
-				fmt.Fprintf(os.Stderr, "--------------------------------------------------------------------------\n")
-				fmt.Fprintf(os.Stderr, "* goroutine\n") // #nosec G104
-				pprof.Lookup("goroutine").WriteTo(os.Stderr, 1)
-				fmt.Fprintf(os.Stderr, "* heap\n") // #nosec G104
-				pprof.Lookup("heap").WriteTo(os.Stderr, 1)
-				fmt.Fprintf(os.Stderr, "* allocs\n") // #nosec G104
-				pprof.Lookup("allocs").WriteTo(os.Stderr, 1)
-				fmt.Fprintf(os.Stderr, "--------------------------------------------------------------------------\n") // #nosec G104
-			}
+			<-sig
+			fmt.Fprintf(os.Stderr, "--------------------------------------------------------------------------\n")
+			fmt.Fprintf(os.Stderr, "* goroutine\n")
+			pprof.Lookup("goroutine").WriteTo(os.Stderr, 1)
+			fmt.Fprintf(os.Stderr, "* heap\n")
+			pprof.Lookup("heap").WriteTo(os.Stderr, 1)
+			fmt.Fprintf(os.Stderr, "* allocs\n")
+			pprof.Lookup("allocs").WriteTo(os.Stderr, 1)
+			fmt.Fprintf(os.Stderr, "--------------------------------------------------------------------------\n")
 		}
 	}()
 }
