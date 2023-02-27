@@ -1,3 +1,9 @@
+## [v0.1.8](https://github.com/hirose31/ltsv-tailer/compare/v0.1.7...v0.1.8) (2023-02-27)
+
+* Bump golang.org/x/sys from 0.0.0-20210603125802-9665404d3644 to 0.1.0 [#10](https://github.com/hirose31/ltsv-tailer/pull/10) ([dependabot[bot]](https://github.com/apps/dependabot))
+* Pass make lint security [#9](https://github.com/hirose31/ltsv-tailer/pull/9) ([hirose31](https://github.com/hirose31))
+* Just refine workflows [#8](https://github.com/hirose31/ltsv-tailer/pull/8) ([hirose31](https://github.com/hirose31))
+
 ## [v0.1.7](https://github.com/hirose31/ltsv-tailer/compare/v0.1.6...v0.1.7) (2023-02-15)
 
 * Bump github.com/prometheus/client_golang from 1.10.0 to 1.11.1 [#7](https://github.com/hirose31/ltsv-tailer/pull/7) ([dependabot[bot]](https://github.com/apps/dependabot))
