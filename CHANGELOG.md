@@ -1,3 +1,7 @@
+## [v0.1.9](https://github.com/hirose31/ltsv-tailer/compare/v0.1.8...v0.1.9) (2024-03-14)
+
+* Bump google.golang.org/protobuf from 1.26.0-rc.1 to 1.33.0 [#11](https://github.com/hirose31/ltsv-tailer/pull/11) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v0.1.8](https://github.com/hirose31/ltsv-tailer/compare/v0.1.7...v0.1.8) (2023-02-27)
 
 * Bump golang.org/x/sys from 0.0.0-20210603125802-9665404d3644 to 0.1.0 [#10](https://github.com/hirose31/ltsv-tailer/pull/10) ([dependabot[bot]](https://github.com/apps/dependabot))
