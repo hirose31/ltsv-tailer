@@ -3,7 +3,7 @@ module github.com/hirose31/ltsv-tailer
 go 1.19
 
 require (
-	github.com/golang/glog v0.0.0-20210429001901-424d2337a529
+	github.com/golang/glog v1.2.4
 	github.com/hpcloud/tail v1.0.1-0.20180514194441-a1dbeea552b7
 	github.com/lestrrat-go/strftime v1.0.4
 	github.com/najeira/ltsv v0.0.0-20150303073528-40eb84a5b5d2
